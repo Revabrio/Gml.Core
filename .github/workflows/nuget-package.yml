@@ -1,0 +1,51 @@
+name: Publish NuGet Package
+
+on:
+  push:
+    tags: [ 'v*.*.*', 'v*.*', 'v*.*.*-alpha*', 'v*.*-alpha*' ]
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    env:
+      NUGET_IGNORE_FAILED_SOURCES: 'true'
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+          source-url: https://api.nuget.org/v3/index.json
+        env:
+          NUGET_AUTH_TOKEN: ${{ secrets.NUGET_API_KEY }}
+
+      - name: Restore dependencies
+        run: dotnet restore
+
+      - name: Build and pack interfaces
+        run: |
+          dotnet build src/Gml.Interfaces/Gml.Interfaces.csproj --configuration Release
+          dotnet pack src/Gml.Interfaces/Gml.Interfaces.csproj --configuration Release --no-build --output ./nupkgs
+
+      - name: Build and pack domains
+        run: |
+          dotnet build src/Gml.Domains/Gml.Domains.csproj --configuration Release
+          dotnet pack src/Gml.Domains/Gml.Domains.csproj --configuration Release --no-build --output ./nupkgs
+
+      - name: Build and pack dto
+        run: |
+          dotnet build src/Gml.Dto/Gml.Dto.csproj --configuration Release
+          dotnet pack src/Gml.Dto/Gml.Dto.csproj --configuration Release --no-build --output ./nupkgs
+
+      - name: Add local NuGet source
+        run: dotnet nuget add source "./nupkgs" --name LocalPackages
+
+      - name: Build full solution
+        run: dotnet build Gml.Core.sln --configuration Release
+
+      - name: Publish to NuGet.org
+        run: dotnet nuget push "./nupkgs/*.nupkg" --api-key ${{ secrets.NUGET_API_KEY }} --source https://api.nuget.org/v3/index.json --skip-duplicate

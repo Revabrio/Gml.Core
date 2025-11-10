@@ -1,0 +1,47 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <RootNamespace>Gml</RootNamespace>
+    <Nullable>enable</Nullable>
+    <LangVersion>latest</LangVersion>
+    <PackageId>Gml.Core</PackageId>
+    <TargetFramework>net8.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="CurseForge.APIClient" Version="3.0.0" />
+    <PackageReference Include="Microsoft.IdentityModel.Tokens" Version="8.14.0" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+    <PackageReference Include="Spectre.Console" Version="0.50.0" />
+    <PackageReference Include="sqlite-net-pcl" Version="1.9.172" />
+    <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="8.14.0" />
+    <PackageReference Include="System.Runtime.Loader" Version="4.3.0"/>
+     <PackageReference Include="System.Text.Json" Version="8.0.6" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\CmlLib.Core.Installer.Forge\CmlLib.Core.Installer.Forge\CmlLib.Core.Installer.Forge.csproj"/>
+    <ProjectReference Include="..\CmlLib.Core.Installer.NeoForge\CmlLib.Core.Installer.NeoForge\CmlLib.Core.Installer.NeoForge.csproj" />
+    <ProjectReference Include="..\Gml.Common\Gml.Common\Gml.Common.csproj" />
+    <ProjectReference Include="..\Gml.Dto\Gml.Dto.csproj" />
+    <ProjectReference Include="..\Gml.Interfaces\Gml.Interfaces.csproj" />
+    <ProjectReference Include="..\Modrinth.Api\src\Modrinth.Api\Modrinth.Api.csproj" />
+    <ProjectReference Include="..\Pingo\Pingo\Pingo.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="Models\GameProfile.cs">
+      <DependentUpon>BaseProfile.cs</DependentUpon>
+    </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="Microsoft.AspNetCore.Http.Features">
+      <HintPath>C:\Program Files\dotnet\shared\Microsoft.AspNetCore.App\8.0.14\Microsoft.AspNetCore.Http.Features.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
+  <ItemGroup Condition="'$(TargetFramework)' == 'net8.0'">
+    <PackageReference Include="Minio" Version="5.0.2" />
+  </ItemGroup>
+</Project>
